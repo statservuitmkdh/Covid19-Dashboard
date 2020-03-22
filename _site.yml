@@ -1,2 +1,9 @@
 name: "Covid-19 Dashboard"
-output_dir: docs
+navbar:
+  title: "Covid-19 Dashboard Malaysia"
+  left:
+    - text: "Home"
+      href: index.html
+output:
+  html_document:
+output.dir: "."
