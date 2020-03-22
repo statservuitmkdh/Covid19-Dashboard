@@ -1,0 +1,126 @@
+---
+title: "Covid-19 Malaysia"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: row
+    vertical_layout: fill
+    social: ["twitter", "facebook", "menu"]
+    source_code: embed
+  runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(flexdashboard)
+library(knitr)
+library(DT)
+library(rpivotTable)
+library(ggplot2)
+library(plotly)
+library(dplyr)
+library(openintro)
+library(highcharter)
+library(ggvis)
+library(reshape)
+```
+
+
+```{r include=FALSE}
+setwd("G:/R Project/covid19/Covid 19 Dashboard")
+# Get Covid-19 Real Time Data
+# url<-"https://query.data.world/s/dq567bzaex7zqd3omepzmbk2is3luk"
+# covid19<-read.csv2(url, header = TRUE, sep = ",")
+# write.csv(covid19, "G:/R project/covid19/Covid 19 Dashboard/covid19.csv")
+
+covid19 <- read.csv("covid19.csv", header = TRUE, sep = ",")
+
+# Rename Variables
+covid19_new <- rename(covid19, c(ï..Date="Date", Country_Region="Country", Province_State="State"))
+names(covid19_new)
+
+# Working with Dates
+covid19_new$Date <- as.Date(covid19_new$Date, format='%m/%d/%Y')
+head(covid19_new$Date)
+
+# Resave data with date conversion
+write.csv(covid19_new, "G:/R Project/covid19/Covid 19 Dashboard/covid19_new.csv")
+
+# Case Type by Date in Malaysia
+covid19_Malaysia <- filter(covid19_new, covid19$Country == "Malaysia")
+write.csv(covid19_Malaysia, "G:/R Project/covid19/Covid 19 Dashboard/covid19_Malaysia.csv")
+
+casevalue <- filter(covid19_Malaysia, covid19_Malaysia$Date == max(covid19_Malaysia$Date))
+```
+
+Visualization
+========================================
+
+Row
+----------------------------------------
+
+### **Confirmed**
+
+```{r}
+valueBox(casevalue[3,6], icon = "fa-user", color = "blue")
+```
+
+### **Active**
+
+```{r}
+valueBox(casevalue[4,6], icon = "fa-user", color = "orange")
+```
+
+### **Recovered**
+
+```{r}
+valueBox(casevalue[1,6], icon = "fa-user", color = "green")
+```
+
+### **Death**
+
+```{r}
+valueBox(casevalue[2,6], icon = "fa-user", color = "red")
+```
+
+Row
+----------------------------------------
+
+```{r}
+p2 <- ggplot2::ggplot(covid19_Malaysia) +
+  aes(x = Date, colour = Case_Type, weight = Cases) +
+  geom_bar(fill = "#0c4c8a") +
+  scale_color_hue() +
+  labs(x = "Date", 
+       y = "Number of Cases", 
+       title = "Cases Recorded By Date in Malaysia", 
+       subtitle = "As of 20 March 2020", 
+       color = "Case Type",
+       legend = "bottom") +
+  theme_minimal() +
+  facet_wrap(vars(Case_Type))
+
+ggplotly(
+  p = ggplot2::last_plot(),
+  width = 1400,
+  height = 700,
+  tooltip = "all",
+  dynamicTicks = FALSE,
+  layerData = 1,
+  originalData = TRUE,
+  source = "A",
+)
+```
+
+Data Table
+========================================
+
+Row
+-------------------------------------------------
+
+```{r}
+datatable(covid19_Malaysia,
+          caption = "Covid-19 Cases in Malaysia",
+          rownames = T,
+          filter = "top",
+          options = list(pageLength = 25))
+```
