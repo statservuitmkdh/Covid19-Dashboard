@@ -26,13 +26,13 @@ library(reshape)
 
 
 ```{r include=FALSE}
-setwd("G:/R Project/covid19/Covid 19 Dashboard")
+# setwd("G:/R Project/covid19/Covid 19 Dashboard")
 # Get Covid-19 Real Time Data
-# url<-"https://query.data.world/s/dq567bzaex7zqd3omepzmbk2is3luk"
-# covid19<-read.csv2(url, header = TRUE, sep = ",")
+url<-"https://query.data.world/s/dq567bzaex7zqd3omepzmbk2is3luk"
+covid19<-read.csv2(url, header = TRUE, sep = ",")
 # write.csv(covid19, "G:/R project/covid19/Covid 19 Dashboard/covid19.csv")
 
-covid19 <- read.csv("covid19.csv", header = TRUE, sep = ",")
+# covid19 <- read.csv("covid19.csv", header = TRUE, sep = ",")
 
 # Rename Variables
 covid19_new <- rename(covid19, c(ï..Date="Date", Country_Region="Country", Province_State="State"))
@@ -43,11 +43,11 @@ covid19_new$Date <- as.Date(covid19_new$Date, format='%m/%d/%Y')
 head(covid19_new$Date)
 
 # Resave data with date conversion
-write.csv(covid19_new, "G:/R Project/covid19/Covid 19 Dashboard/covid19_new.csv")
+# write.csv(covid19_new, "G:/R Project/covid19/Covid 19 Dashboard/covid19_new.csv")
 
 # Case Type by Date in Malaysia
 covid19_Malaysia <- filter(covid19_new, covid19$Country == "Malaysia")
-write.csv(covid19_Malaysia, "G:/R Project/covid19/Covid 19 Dashboard/covid19_Malaysia.csv")
+# write.csv(covid19_Malaysia, "G:/R Project/covid19/Covid 19 Dashboard/covid19_Malaysia.csv")
 
 casevalue <- filter(covid19_Malaysia, covid19_Malaysia$Date == max(covid19_Malaysia$Date))
 ```
